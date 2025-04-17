@@ -28,9 +28,9 @@ research-agent/
    ```
 
 2. **Start Virtual Environment**
-```bash
-source ./research-agent/bin/activate   
-```
+    ```bash
+    source ./research-agent/bin/activate   
+    ```
 
 3. **Install dependencies**
    ```bash
@@ -53,13 +53,7 @@ Then import and register it in `main.py`.
 ## 📌 Notes
 
 - This project uses `dotenv` to manage API keys securely.
-- Make sure you’re using Python 3.9+.
-
-## 💡 Future Ideas
-
-- Add memory for better multi-turn research
-- Web scraping integration
-- Support for multiple LLMs (Anthropic, Mistral, etc.)
+- Make sure you’re using Python 3.10+.
 
 ## 👨‍💻 Author
 
