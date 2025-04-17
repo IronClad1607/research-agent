@@ -1,5 +1,5 @@
 """
-research_agent.py
+main.py
 
 A modular LLM-powered research assistant that uses Langchain's agent framework
 and tool calling capabilities. It utilizes OpenAI's GPT models and structured output
