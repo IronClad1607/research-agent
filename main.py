@@ -5,8 +5,9 @@ from pydantic import BaseModel
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_tool_calling_agent, AgentExecutor
+from tools import search_tool, wiki_tool, save_tool
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 class ResearchResponse(BaseModel):
@@ -16,11 +17,7 @@ class ResearchResponse(BaseModel):
     tools_used: list[str]
 
 
-llm = ChatOpenAI(
-    model="meta-llama/llama-4-scout:free",
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
+llm = ChatOpenAI(model="gpt-4o-mini")
 
 parser = PydanticOutputParser(pydantic_object=ResearchResponse)
 
@@ -40,11 +37,15 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 ).partial(format_instructions=parser.get_format_instructions())
 
-agent = create_tool_calling_agent(llm=llm, prompt=prompt, tools=[])
+tools = [search_tool, wiki_tool, save_tool]
+agent = create_tool_calling_agent(llm=llm, prompt=prompt, tools=tools)
 
-agent_executor = AgentExecutor(agent=agent, tools=[], verbose=True)
-raw_response = agent_executor.invoke({"query": "What is the capital of France?"})
-print(raw_response)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+query = input("What can I help you research? ")
 
-structured_response = parser.parse(raw_response.get("output"))
-print(structured_response)
+raw_response = agent_executor.invoke({"query": query})
+try:
+    structured_response = parser.parse(raw_response.get("output"))
+    print(structured_response)
+except Exception as e:
+    print("Error Parsing Response", e, "Raw Response is", raw_response)
